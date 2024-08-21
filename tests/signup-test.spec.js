@@ -27,13 +27,23 @@ test.describe('Signup Flow', () => {
 
     // Click 'Create account'
     const createAccountButton = await page.locator('[data-testid="email-sign-up"]');
-    createAccountButton.click()
-
-
-    
+    await createAccountButton.click()
+  
     // Assert that it navigates to the personal info page
     await expect(page).toHaveURL('https://app-moccona.letsweel.com/app/personal-info');
   });
+
+  test('should show error messages for empty fields', async ({ page }) => {
+    // Attempt to submit without filling the email
+    const submitButton = page.locator('[data-testid="submit-button"]');
+    await submitButton.click();
+    
+    // Assert that the email field shows an error message
+    const emailError = await page.locator('[data-testid="form-input-wrapper-error-text"]');
+    await expect(emailError).toBeVisible();
+  });
+
+
 
   
 });
