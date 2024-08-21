@@ -19,7 +19,8 @@ test.describe('Signup Flow', () => {
       submitButton = page.locator('[data-testid="submit-button"]');
       label = page.locator('label').nth(2);
       createAccountButton = page.locator('[data-testid="email-sign-up"]');
-      emailError = page.locator('[data-testid="form-input-wrapper-error-text"]')
+      emailError = page.locator('[data-testid="form-input-wrapper-error-text"]');
+      
     
   });
 
@@ -55,12 +56,21 @@ test.describe('Signup Flow', () => {
   test('should show error messages for empty password field', async ({ page }) => {
     // Attempt to submit without filling the password
     await emailInput.fill('validemail@domain.com'); // Fill email for submission
-    await page.pause()
-    await passwordInput.fill(''); // Ensure password field is empty
     await submitButton.click();
     
+    await passwordInput.fill(''); // Ensure password field is empty
+    await label.click();
+    
+
+    
     // Assert that the password field shows an error message
-    const passwordError = await page.locator('[data-testid="form-input-wrapper-error-text"]').nth(1); // Adjust index if needed
-    await expect(passwordError).toBeVisible();
+    
+    // Locate the parent element by data-testid
+    const parentElement = page.locator('[data-testid="ds-minimum-length-feedback"]');
+
+    // Locate the 'circle' element within the parent element
+    const circleElement = parentElement.locator('circle');
+    await expect(circleElement).toBeVisible();
+
   });
 });
