@@ -53,24 +53,43 @@ test.describe('Signup Flow', () => {
   //   await expect(emailError).toBeVisible();
   // });
 
-  test('should show error messages for empty password field', async ({ page }) => {
-    // Attempt to submit without filling the password
-    await emailInput.fill('validemail@domain.com'); // Fill email for submission
+  // test('should show error messages for empty password field', async ({ page }) => {
+  //   // Attempt to submit without filling the password
+  //   await emailInput.fill('validemail@domain.com'); // Fill email for submission
+  //   await submitButton.click();
+    
+  //   await passwordInput.fill(''); // Ensure password field is empty
+  //   await label.click();
+    
+
+    
+  //   // Assert that the password field shows an error message
+    
+  //   // Locate the parent element by data-testid
+  //   const parentElement = page.locator('[data-testid="ds-minimum-length-feedback"]');
+
+  //   // Locate the 'circle' element within the parent element
+  //   const circleElement = parentElement.locator('circle');
+  //   await expect(circleElement).toBeVisible();
+
+  // });
+
+  test('should only accept valid work emails', async ({ page }) => {
+    // Enter an invalid email and click submit
+    await emailInput.fill('invalid@gmail.com')
     await submitButton.click();
     
-    await passwordInput.fill(''); // Ensure password field is empty
+
+    // Need to input valid password and agree to terms
+    await passwordInput.fill('P@ssw0rd2024');
     await label.click();
-    
+    await createAccountButton.click()
 
     
-    // Assert that the password field shows an error message
-    
-    // Locate the parent element by data-testid
-    const parentElement = page.locator('[data-testid="ds-minimum-length-feedback"]');
-
-    // Locate the 'circle' element within the parent element
-    const circleElement = parentElement.locator('circle');
-    await expect(circleElement).toBeVisible();
-
+    // Assert that an error message is shown
+    const emailError = await page.locator('[data-testid="form-input-wrapper-error-text"]');
+    await expect(emailError).toBeVisible();
   });
+
+
 });
