@@ -1,5 +1,11 @@
 const {test, expect} = require('@playwright/test');
 
+// Helper function to generate a unique email address
+function generateUniqueEmail(baseEmail) {
+  const randomNumber = Math.floor(Math.random() * 1000000); // Generate a random 6-digit number
+  return `${baseEmail}${randomNumber}@example.com`;
+}
+
 test.describe('Signup Flow', () => {
   let emailInput;
   let passwordInput;
@@ -25,90 +31,93 @@ test.describe('Signup Flow', () => {
   });
 
   
-  // test('should navigate to personal info page on successful email signup', async ({ page }) => {
-  //   // Enter a valid work email and click 'Sign up with email'
-  //   await emailInput.fill('ross@example.com');
+  test('should navigate to personal info page on successful email signup', async ({ page }) => {
+    // Enter a valid work email and click 'Sign up with email'
+    const uniqueEmail = generateUniqueEmail('ross');
     
-  //   // Click 'Sign up with email'
-  //   await submitButton.click()
+    // Enter a valid work email and click 'Sign up with email'
+    await emailInput.fill(uniqueEmail);
     
-  //   // Enter a valid password
-  //   await passwordInput.fill('P@ssw0rd2024');
+    // Click 'Sign up with email'
+    await submitButton.click()
+    
+    // Enter a valid password
+    await passwordInput.fill('P@ssw0rd2024');
 
-  //   // Click 'I agree to terms'
-  //   await label.click();
+    // Click 'I agree to terms'
+    await label.click();
 
-  //   // Click 'Create account'
-  //   await createAccountButton.click()
+    // Click 'Create account'
+    await createAccountButton.click()
   
-  //   // Assert that it navigates to the personal info page
-  //   await expect(page).toHaveURL('https://app-moccona.letsweel.com/app/personal-info');
-  // });
+    // Assert that it navigates to the personal info page
+    await expect(page).toHaveURL('https://app-moccona.letsweel.com/app/personal-info');
+  });
 
 
-  // // Test case: Verify error message for empty email field
-  // test('should show error messages for empty email field', async ({ page }) => {
-  //   // Attempt to submit without filling the email
-  //   await submitButton.click();
+  // Test case: Verify error message for empty email field
+  test('should show error messages for empty email field', async ({ page }) => {
+    // Attempt to submit without filling the email
+    await submitButton.click();
     
-  //   // Assert that the email field shows an error message
-  //   await expect(emailError).toBeVisible();
-  // });
+    // Assert that the email field shows an error message
+    await expect(emailError).toBeVisible();
+  });
 
 
-  // // Test case: Verify error message for empty password field
-  // test('should show error messages for empty password field', async ({ page }) => {
-  //   // Attempt to submit without filling the password
-  //   await emailInput.fill('ross@example.com'); // Fill email for submission
-  //   await submitButton.click();
+  // Test case: Verify error message for empty password field
+  test('should show error messages for empty password field', async ({ page }) => {
+    // Attempt to submit without filling the password
+    const uniqueEmail = generateUniqueEmail('ross');
+    await emailInput.fill(uniqueEmail); // Fill email for submission
+    await submitButton.click();
     
-  //   await passwordInput.fill(''); // Ensure password field is empty
-  //   await label.click();
+    await passwordInput.fill(''); // Ensure password field is empty
+    await label.click();
     
-  //   // Assert that the password field shows an error message
+    // Assert that the password field shows an error message
     
-  //   // Locate the parent element by data-testid
-  //   const parentElement = page.locator('[data-testid="ds-minimum-length-feedback"]');
+    // Locate the parent element by data-testid
+    const parentElement = page.locator('[data-testid="ds-minimum-length-feedback"]');
 
-  //   // Locate the 'circle' element within the parent element
-  //   const circleElement = parentElement.locator('circle');
-  //   await expect(circleElement).toBeVisible();
+    // Locate the 'circle' element within the parent element
+    const circleElement = parentElement.locator('circle');
+    await expect(circleElement).toBeVisible();
 
-  // });
+  });
 
 
-  // // Test case: Verify error message for invalid email format
-  // test('should only accept valid work emails', async ({ page }) => {
-  //   // Enter an invalid email and click submit
-  //   await emailInput.fill('invalid@gmail.com')
-  //   await submitButton.click();
+  // Test case: Verify error message for invalid email format
+  test('should only accept valid work emails', async ({ page }) => {
+    // Enter an invalid email and click submit
+    await emailInput.fill('invalid@gmail.com')
+    await submitButton.click();
 
-  //   // Need to input valid password and agree to terms
-  //   await passwordInput.fill('P@ssw0rd2024');
-  //   await label.click();
-  //   await createAccountButton.click()
+    // Need to input valid password and agree to terms
+    await passwordInput.fill('P@ssw0rd2024');
+    await label.click();
+    await createAccountButton.click()
     
-  //   // Assert that an error message is shown
-    
-  //   await expect(emailError).toBeVisible();
-  // });
+    // Assert that an error message is shown
+    await expect(emailError).toBeVisible();
+  });
 
 
-  // // Test case: Verify error message for already registered email
-  // test('Verify error message for already registered email', async ({ page }) => {
-  //   // Enter an login details for email that has already been registered and submit
-  //   await emailInput.fill('ross@example.com');
-  //   await submitButton.click();
-  //   await passwordInput.fill('P@ssw0rd2024');
-  //   await label.click();
-  //   await createAccountButton.click()
+  // Test case: Verify error message for already registered email
+  test('Verify error message for already registered email', async ({ page }) => {
+    // Enter an login details for email that has already been registered and submit
+    await emailInput.fill('ross@example.com');
+    await submitButton.click();
+    await passwordInput.fill('P@ssw0rd2024');
+    await label.click();
+    await createAccountButton.click()
 
-  //   // Locate the error message by text
-  //   const errorMessage = page.locator('text=This account already exists.');
+    // Locate the error message by text
+    const errorMessage = page.locator('text=This account already exists.');
 
-  //   // Assert that the error message is visible
-  //   await expect(errorMessage).toBeVisible();
-  // });
+    // Assert that the error message is visible
+    await expect(errorMessage).toBeVisible();
+  });
 
   // Helper function to check for a password validation error based on text color
   async function checkPasswordError(page, password, errorText) {
@@ -130,7 +139,8 @@ test.describe('Signup Flow', () => {
   // Test case: Verify error message for invalid password (all requirements)
   test('Verify error messages for invalid password requirements', async ({ page }) => {
     // Enter a registered email and submit
-    await emailInput.fill('ross@example.com');
+    const uniqueEmail = generateUniqueEmail('ross');
+    await emailInput.fill(uniqueEmail);
     await submitButton.click();
     
     // Test missing number
